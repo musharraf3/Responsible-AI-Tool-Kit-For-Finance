@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Responsible AI Toolkit</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <h1>Responsible AI Toolkit for Finance</h1>
+    
+    <!-- File Upload -->
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload Dataset</button>
+    </form>
+    <br>
+
+    <!-- Preprocess Data -->
+    <form action="/preprocess" method="POST">
+        <button type="submit" >Preprocess Data</button>
+    </form>
+    <br>
+	
+	<!-- Generate Synthetic Data -->
+    <form action="/generate_data" method="POST">
+        <button type="submit">Generate Synthetic Data</button>
+    </form>
+    <br>
+
+    
+    {% if plots %}
+    <h3>Visual Comparisons and Bias Metrics</h3>
+    {% for plot in plots %}
+        <div>
+            <img src="{{ url_for('static', filename='plots/' + plot) }}" alt="Plot for {{ plot }}" style="width:80%; height:auto;">
+        </div>
+    {% endfor %}
+    {% endif %}
+
+
+     <!-- Display Output -->
+    {% if message %}
+        <h3 style="color: green;">{{ message }}</h3>
+    {% endif %}
+    {% if original_mean %}
+        <p><b>Original Data Mean:</b> {{ original_mean }}</p>
+    {% endif %}
+    {% if synthetic_mean %}
+        <p><b>Synthetic Data Mean:</b> {{ synthetic_mean }}</p>
+    {% endif %}
+
+ <!-- Display Visual Comparisons -->
+    <!-- <h3>Visual Comparisons</h3>
+    {% if plots %}
+    {% for plot in plots %}
+        <div>
+            <img src="{{ url_for('static', filename='plots/' + plot) }}" alt="Plot for {{ plot }}" style="width:80%; height:auto;">
+        </div>
+    {% endfor %}
+    {% endif %} -->
+
+
+
+
+
+    <!-- Train Predictive Model -->
+    <form action="/train_model" method="POST">
+        <button type="submit">Train Predictive Model</button>
+    </form>
+	
+    <!-- Display Output -->
+    {% if message_1 %}
+        <h3 style="color: green;">{{ message_1 }}</h3>
+    {% endif %}
+    {% if accuracy %}
+        <p><b>Model Accuracy:</b> {{ accuracy }}</p>
+    {% endif %}
+
+    <!-- Button and Explanation Container -->
+<button id="explainBias" onclick="requestExplanation()">Explain Bias</button>
+<div id="biasExplanation" style="text-align: justify; margin: 10px 0;"></div>
+
+<!-- JavaScript for Bias Explanation -->
+<script>
+    function requestExplanation() {
+        // Fetch bias metrics dynamically from the backend
+        fetch('/get_bias_metrics', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(biasMetrics => {
+            if (biasMetrics.error) {
+                console.error("Error fetching bias metrics:", biasMetrics.error);
+                document.getElementById('biasExplanation').innerHTML = `<strong>Error:</strong> ${biasMetrics.error}`;
+                return;
+            }
+
+            const originalBias = biasMetrics.original_bias;
+            const combinedBias = biasMetrics.combined_bias;
+
+            // Send the explanation request with the fetched metrics
+            fetch('/explain_bias', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ original_bias: originalBias, combined_bias: combinedBias })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const biasExplanationDiv = document.getElementById('biasExplanation');
+
+                if (data.explanation) {
+                    console.log("Explanation:", data.explanation); // Debugging
+                    // Format the explanation: Bold **text** and replace newlines with <br>
+                    const formattedExplanation = data.explanation.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                    biasExplanationDiv.innerHTML = `<strong>Explanation:</strong><br>${formattedExplanation}`;
+                } else if (data.error) {
+                    console.error("Error from server:", data.error); // Debugging
+                    biasExplanationDiv.innerHTML = `<strong>Error:</strong> Server Error: ${data.error}`;
+                } else {
+                    biasExplanationDiv.innerHTML = `<strong>Error:</strong> Failed to generate explanation.`;
+                }
+            })
+            .catch(error => {
+                console.error('Network Error:', error); // Debugging
+                document.getElementById('biasExplanation').innerHTML = `<strong>Error:</strong> A network error occurred.`;
+            });
+        })
+        .catch(error => {
+            console.error('Network Error:', error);
+            document.getElementById('biasExplanation').innerHTML = `<strong>Error:</strong> Failed to fetch bias metrics.`;
+        });
+    }
+</script>
+
+</body>
+</html>

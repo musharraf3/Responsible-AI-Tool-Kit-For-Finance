@@ -1,0 +1,119 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1 {
+    color: #4CAF50;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h3 {
+    color: #333;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 5px;
+    margin-top: 30px;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Forms */
+form {
+    margin-bottom: 20px;
+}
+
+input[type="file"] {
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#explainBias {
+    margin-top: 20px;
+    background-color: #007BFF;
+}
+
+#explainBias:hover {
+    background-color: #0056b3;
+}
+
+/* Bias Explanation */
+#biasExplanation {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #e8f5e9;
+    border-left: 4px solid #4CAF50;
+    font-size: 14px;
+}
+
+/* Image Styling */
+img {
+    display: block;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+td {
+    background-color: #fff;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    h1, h3 {
+        font-size: 20px;
+    }
+}
